@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>by.vndovr.bundle</groupId>
+  <artifactId>sample</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Sample executable</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
+    <javafx.version>2.1</javafx.version>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <taskdef name="jfxdeploy" classname="com.sun.javafx.tools.ant.DeployFXTask" classpathref="maven.plugin.classpath" />
+                <taskdef name="jfxsignjar" classname="com.sun.javafx.tools.ant.FXSignJarTask" classpathref="maven.plugin.classpath" />
+                <taskdef name="jfxjar" classname="com.sun.javafx.tools.ant.FXJar" classpathref="maven.plugin.classpath" />
+                <jfxjar destfile="${project.build.directory}/${project.build.finalName}">
+                  <fileset dir="${project.build.directory}/classes" />
+                  <application name="${project.name}" mainClass="by.vndovr.Hello" />
+                </jfxjar>
+                <!-- specify type of generated bundle -->
+                <jfxdeploy 
+                           width="800" 
+                           height="600" 
+                           nativeBundles="exe" 
+                           outdir="${project.build.directory}/distribution" 
+                           outfile="${build.finalName}"
+                           verbose="true">
+                  <info title="${project.name}" />
+                  <application name="${project.name}" mainClass="by.vndovr.Hello" />
+                  <resources>
+                    <fileset dir="${project.build.directory}" includes="${project.build.finalName}.jar" />
+                    <fileset dir="${project.basedir}/ext" includes="**/*" />
+                  </resources>
+                  <platform javafx="8.0" j2se="1.8+">
+                    <jvmarg value="-Xmx1g" />
+                    <property name="sample.system.property" value="value" />
+                  </platform>
+                </jfxdeploy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ant-javafx</artifactId>
+            <version>${javafx.version}</version>
+            <systemPath>${java.home}/../lib/ant-javafx.jar</systemPath>
+            <scope>system</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>

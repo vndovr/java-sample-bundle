@@ -1,3 +1,19 @@
+.classpath
+.factorypath
+.pmd
+.pmdruleset.xml
+*.log
+.project
+*.xml.versionsBackup
+.idea
+*.iml
+jacoco.exec
+/build/
+lib/
+target/
+.settings/
+
+
 # Compiled class file
 *.class
 
